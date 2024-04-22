@@ -4,6 +4,10 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src=https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js></script> 
+    <script src=https://code.jquery.com/jquery-1.9.1.js></script> 
+    <script src=https://code.jquery.com/ui/1.11.0/jquery-ui.js></script> 
+    
 	<title>Misinformation Burst</title>
 </head>
 <style>
@@ -300,6 +304,10 @@ html body #quiz #questions .slide fieldset button:nth-of-type(2) {
   
 </body>
 <script>
+
+$("document").ready( function () {
+        alert("Please make sure your device is in landscape orientation to the play the game");
+    }); 
 const data = {
   answers: {
     "Fact": ["Taylor Swift endorsed Donald Trump at Grammy Awards 2024","Virat has promoted HSBC Bank","Virat has been promoting a product of Sun Pharma who intended to expand their industry destructing Vedanthangal Bird Sanctuary"],
