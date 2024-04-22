@@ -1,441 +1,523 @@
-<!--index.html-->
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
 	<meta charset="UTF-8" />
-	<meta name="viewport"
-		content="width=device-width,
-				initial-scale=1.0" />
-	<link rel="stylesheet"
-		href="./style.css" />
-	<title>Spot the Lie</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Misinformation Burst</title>
 </head>
-
 <style>
-    /* Style.css */
-
-* {
-	font-family: "Source Sans Pro", sans-serif;
+@keyframes dropin {
+  from {
+    top: -100%;
+  }
 }
-
-.quiz,
-.scores {
-	margin: 50px auto 0 auto;
-	max-width: 400px;
+@keyframes noclick {
+  from {
+    top: -100%;
+    left: -100%;
+  }
+  to {
+    top: 0;
+    left: 0;
+  }
 }
-
-#top {
-	color: whitesmoke;
+@keyframes feedbackAnimIn {
+  0% {
+    top: -50%;
+  }
+  20% {
+    top: 50%;
+  }
+  100% {
+    top: 50%;
+  }
 }
-
-.containerNew {
-	border: 5px solid;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	height: 580px;
-	width: 50%;
-	transform: translate(-50%, -50%);
-	padding: 10px;
-    background: #2E706C;
+@keyframes feedbackAnimOut {
+  0% {
+    top: 50%;
+  }
+  80% {
+    top: 50%;
+  }
+  100% {
+    top: 100%;
+  }
 }
-
-p {
-	margin: 15px 15px;
+.hidden {
+  display: none;
 }
-
-.landing {
-	text-align: center;
+html {
+  font-family: Garamond, serif;
+  font-size: 1.2em;
+  margin: 0;
+  padding: 0;
 }
-
-.scoresHeader {
-	position: absolute;
-	top: 15px;
-	left: 15px;
+html * {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  font-family: Garamond, serif;
 }
-
-.timer {
-	position: absolute;
-	top: 15px;
-	right: 15px;
-    color: #fff;
+html body {
+  margin: 0;
+  padding: 0;
 }
-
-button {
-	display: inline-block;
-	margin: 10px;
-	cursor: pointer;
-	color: black;
-	background-color: white;
-	border-radius: 5px;
-	border: 0;
-	padding: 20px;
+html body #quiz {
+  background: #edff74;
+  background: linear-gradient(90deg, #f1d18a 50%, #588d9c 50%);
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 200px;
+  min-height: 400px;
 }
-
-button:hover {
-	background-color: #2a8d12;
+html body #quiz #feedback {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: -100%;
+  left: -100%;
 }
-
-.options button {
-	display: block;
+html body #quiz #feedback > span {
+  background: black;
+  color: white;
+  font-weight: bold;
+  filter: drop-shadow(4px 4px 0 rgba(0, 0, 0, 0.2));
+  position: absolute;
+  padding: 1em;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transform-origin: center;
 }
-
-input[type="text"] {
-	font-size: 100%;
+html body #quiz #feedback.anim {
+  animation-duration: 0s;
+  animation-fill-mode: forwards;
+  animation-name: noclick;
 }
-
-.hide {
-	display: none;
+html body #quiz #feedback.anim > span {
+  animation-duration: 1s;
+  animation-name: feedbackAnimIn;
+  animation-fill-mode: forwards;
 }
-
-.feedback {
-	font-style: bold;
-	font-size: 120%;
-	margin-top: 20px;
-	padding-top: 15px;
-	color: #fff;
+html body #quiz #feedback.animout > span {
+  animation-duration: 1s;
+  animation-name: feedbackAnimOut;
 }
-
-ol {
-	padding-left: 15px;
-	max-height: 600px;
-	overflow: auto;
+html body #quiz #start, html body #quiz #end, html body #quiz #questions {
+  padding: 3vw;
 }
-
-li {
-	padding: 5px;
-	list-style: decimal inside none;
+html body #quiz #start .detail, html body #quiz #end .detail, html body #quiz #questions .detail {
+  background: white;
+  padding: 0.2em;
+  text-align: center;
 }
-
-li:nth-child(odd) {
-	background-color: #dfdae7;
+html body #quiz #start .circle, html body #quiz #end .circle, html body #quiz #questions .circle, html body #quiz #start fieldset legend, html body #quiz #end fieldset legend, html body #quiz #questions fieldset legend {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.0em;
+  font-weight: bold;
+  text-align: center;
+  background: white;
+  width: 25vw;
+  height: 25vw;
+  min-width: 100px;
+  min-height: 100px;
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1em;
 }
-
-@media screen and (max-width: 768px) {
-	.containerNew {
-		width: 80%;
-	}
+html body #quiz #start .circle span, html body #quiz #end .circle span, html body #quiz #questions .circle span, html body #quiz #start fieldset legend span, html body #quiz #end fieldset legend span, html body #quiz #questions fieldset legend span {
+  pointer-events: none;
+  left: 0;
+  top: 0;
+  background: white;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  border-radius: 50%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1em;
 }
-
-@media screen and (max-width: 575px) {
-	.containerNew {
-		width: 90%;
-	}
-
-	.quiz,
-	.scores {
-		max-width: 90%;
-	}
+html body #quiz #start .circle:after, html body #quiz #end .circle:after, html body #quiz #questions .circle:after, html body #quiz #start fieldset legend:after, html body #quiz #end fieldset legend:after, html body #quiz #questions fieldset legend:after {
+  content: " ";
+  -webkit-backdrop-filter: brightness(90%) saturate(200%);
+  backdrop-filter: brightness(90%) saturate(200%);
+  width: 150%;
+  height: 150%;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+html body #quiz #start legend, html body #quiz #end legend, html body #quiz #questions legend {
+  z-index: 4;
+  cursor: move;
+  cursor: grab;
+}
+html body #quiz #start legend.moving, html body #quiz #end legend.moving, html body #quiz #questions legend.moving {
+  cursor: grabbing;
+}
+html body #quiz #start #startBtn, html body #quiz #end #startBtn, html body #quiz #start #retryBtn, html body #quiz #end #retryBtn {
+  background: black;
+  border: 2px solid black;
+  color: white;
+  border-radius: 0.2em;
+  padding: 0.5em 1em;
+  font-family: Garamond, serif;
+  font-size: 1.2em;
+  transition: all 0.3s;
+  font-weight: bold;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 3vw;
+}
+html body #quiz #start #startBtn:focus, html body #quiz #end #startBtn:focus, html body #quiz #start #retryBtn:focus, html body #quiz #end #retryBtn:focus, html body #quiz #start #startBtn:hover, html body #quiz #end #startBtn:hover, html body #quiz #start #retryBtn:hover, html body #quiz #end #retryBtn:hover {
+  cursor: pointer;
+  color: black;
+  background: white;
+}
+html body #quiz #questions.dropin fieldset legend {
+  animation-duration: 0.25s;
+  animation-name: dropin;
+  animation-fill-mode: forwards;
+}
+html body #quiz #questions.animCircRight fieldset legend {
+  left: 150% !important;
+  transform: translate(-50%, -50%) rotate(150deg);
+  transition: transform 0.9s, left 0.9s;
+}
+html body #quiz #questions.animCircLeft fieldset legend {
+  left: -50% !important;
+  transform: translate(-50%, -50%) rotate(-150deg);
+  transition: transform 1s, left 1s;
+}
+html body #quiz #questions .slide {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  top: 0;
+  left: 0;
+  position: absolute;
+}
+html body #quiz #questions .slide fieldset {
+  border: none;
+}
+html body #quiz #questions .slide fieldset button {
+  color: black;
+  font-size: 1.5em;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 3vw;
+  font-weight: bold;
+  background: transparent;
+  border: none;
+}
+html body #quiz #questions .slide fieldset button:hover, html body #quiz #questions .slide fieldset button:focus {
+  text-decoration: underline;
+  cursor: pointer;
+}
+html body #quiz #questions .slide fieldset button:nth-of-type(1) {
+  position: absolute;
+  left: 0;
+}
+html body #quiz #questions .slide fieldset button:nth-of-type(2) {
+  position: absolute;
+  right: 0;
+}
+@media (max-width: 500px) {
+  html body #quiz #start, html body #quiz #end, html body #quiz #questions {
+    padding: 3vw;
+  }
+  html body #quiz #start .detail, html body #quiz #end .detail, html body #quiz #questions .detail {
+    background: white;
+    padding: 0.2em;
+    text-align: center;
+  }
+  html body #quiz #start .circle, html body #quiz #end .circle, html body #quiz #questions .circle, html body #quiz #start fieldset legend, html body #quiz #end fieldset legend, html body #quiz #questions fieldset legend {
+    top: 0.5em;
+    transform: translate(-50%, 0);
+  }
+  html body #quiz #start.animCircRight fieldset legend, html body #quiz #end.animCircRight fieldset legend, html body #quiz #questions.animCircRight fieldset legend {
+    transform: translate(-50%, 0%) rotate(150deg);
+  }
+  html body #quiz #start.animCircLeft fieldset legend, html body #quiz #end.animCircLeft fieldset legend, html body #quiz #questions.animCircLeft fieldset legend {
+    transform: translate(-50%, 0%) rotate(-150deg);
+  }
+  html body #quiz #start .detail, html body #quiz #end .detail {
+    position: absolute;
+    bottom: 5em;
+    width: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  html body #quiz #questions.anim {
+    animation-duration: 0s;
+    animation-fill-mode: forwards;
+    animation-name: noclick;
+  }
+  html body #quiz #questions .slide {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    top: 0;
+    left: 0;
+    position: absolute;
+  }
+  html body #quiz #questions .slide fieldset {
+    border: none;
+  }
+  html body #quiz #questions .slide fieldset button {
+    font-size: 1em;
+    width: 50%;
+    text-align: center;
+  }
 }
 
 </style>
+
 <body>
-	<div class="containerNew">
-		<header>
-			<div class="timer">
-				<p>
-					Time:
-					<span id="timer">
-						0
-					</span>
-				</p>
-			</div>
-		</header>
-
-		<main class="quiz">
-			<div id="quiz-start">
-				<div class="landing"
-					id="start-screen">
-					<h1 id="top">
-						TruthCon
-					</h1>
-					<h1>
-						Misinformation Burst Challenge
-					</h1>
-					<p style="color: aliceblue;">
-                        You have 60 seconds for each question. 
-                        Keep in mind that incorrect answers
-						will penalize your score/time
-						by ten seconds!
-					</p>
-					<button id="start">
-						Start Quiz
-					</button>
-				</div>
-			</div>
-
-			<div class="hide" id="questions">
-				<h2 id="question-words" style="color: aliceblue;"></h2>
-				<div class="options" id="options">
-				</div>
-			</div>
-
-			<div class="hide" id="quiz-end">
-				<h2 style="color: aliceblue;">All Done!</h2>
-                <p style="color:white">
-               <b>"Virat promoted betting app with the promise of ease money". </b><br>Technology was used to alter an interview clip of Kohli, replacing his real voice with a fabricated one. This made it seem as though he was promoting an online game with dubious benefits. Despite Kohli never endorsing such games, the manipulated video suggests he advocatesfor the app, promising lucrative returns on investments",
-
-                </p>
-                <p>
-                    <a href="https://tedxnapier.github.io/Misinformation-Burst/">
-                        <button>
-                            Re-Start Quiz
-                        </button>
-                    </a>
-                </p>
-				<p hidden>Your final score is:
-					<span id="score-final">
-					</span>
-                    <br>
-				</p>
-				<p hidden>
-					Please enter your name:
-					<input type="text"
-						id="name"
-						max="3" />
-					<button id="submit-score">
-						Submit
-					</button>
-				</p>
-			</div>
-			<div id="feedback"
-				class="feedback hide" style="background-color: #fff;">
-			</div>
-		</main>
-	</div>
-	<script>// script.js
-
-        let questions = [
-            {
-                prompt: `Virat Kohli - Which one is misinformation?`,
-                options: [
-                    "Virat has been promoting a product of Sun Pharma who intended to expand their industry destructing Vedanthangal Bird Sanctuary",
-                    "Virat has promoted HSBC Bank",
-                    "Virat promoted betting app with the promise of ease money",
-                ],
-                answer: "Virat promoted betting app with the promise of ease money",
-            },
-        
-            {
-                prompt: `Taylor Swift - Which one is not a misinformation?`,
-                options: [
-                    "Taylor Swift endorsed Donald Trump at Grammy Awards 2024",
-                    "Singapore sought exclusivity deal over Taylor Swift concert in South East Asia",
-                    "Taylor Swift was escorted to a National Football league stadium by the police. Video of police escorting her to the game gets 1M views",
-                ],
-                answer: "Taylor Swift was escorted to a National Football league stadium by the police. Video of police escorting her to the game gets 1M views",
-            },
-        ];
-        
-        // Get Dom Elements
-        
-        let questionsEl =
-            document.querySelector(
-                "#questions"
-            );
-        let timerEl =
-            document.querySelector("#timer");
-        let choicesEl =
-            document.querySelector("#options");
-        let submitBtn = document.querySelector(
-            "#submit-score"
-        );
-        let startBtn =
-            document.querySelector("#start");
-        let nameEl =
-            document.querySelector("#name");
-        let feedbackEl = document.querySelector(
-            "#feedback"
-        );
-        let reStartBtn =
-            document.querySelector("#restart");
-        
-        // Quiz's initial state
-        let currentQuestionIndex = 0;
-        let time = questions.length * 60;
-        let timerId;
-        
-        // Start quiz and hide frontpage
-        
-        function quizStart() {
-            timerId = setInterval(
-                clockTick,
-                1000
-            );
-            timerEl.textContent = time;
-            let landingScreenEl =
-                document.getElementById(
-                    "start-screen"
-                );
-            landingScreenEl.setAttribute(
-                "class",
-                "hide"
-            );
-            questionsEl.removeAttribute(
-                "class"
-            );
-            getQuestion();
-        }
-        
-        // Loop through array of questions and
-        // Answers and create list with buttons
-        function getQuestion() {
-            let currentQuestion =
-                questions[currentQuestionIndex];
-            let promptEl =
-                document.getElementById(
-                    "question-words"
-                );
-            promptEl.textContent =
-                currentQuestion.prompt;
-            choicesEl.innerHTML = "";
-            currentQuestion.options.forEach(
-                function (choice, i) {
-                    let choiceBtn =
-                        document.createElement(
-                            "button"
-                        );
-                    choiceBtn.setAttribute(
-                        "value",
-                        choice
-                    );
-                    choiceBtn.textContent =
-                        i + 1 + ". " + choice;
-                    choiceBtn.onclick =
-                        questionClick;
-                    choicesEl.appendChild(
-                        choiceBtn
-                    );
-                }
-            );
-        }
-        
-        // Check for right answers and deduct
-        // Time for wrong answer, go to next question
-        
-        function questionClick() {
-            if (
-                this.value !==
-                questions[currentQuestionIndex]
-                    .answer
-            ) {
-                time -= 10;
-                if (time < 0) {
-                    time = 0;
-                }
-                timerEl.textContent = time;
-                feedbackEl.textContent = `Wrong! The correct answer was 
-                ${questions[currentQuestionIndex].answer}.`;
-                feedbackEl.style.color = "red";
-            } else {
-                feedbackEl.textContent =
-                    "Correct!";
-                feedbackEl.style.color =
-                    "green";
-            }
-            feedbackEl.setAttribute(
-                "class",
-                "feedback"
-            );
-            setTimeout(function () {
-                feedbackEl.setAttribute(
-                    "class",
-                    "feedback hide"
-                );
-            }, 1000);
-            currentQuestionIndex++;
-            if (
-                currentQuestionIndex ===
-                questions.length
-            ) {
-                quizEnd();
-            } else {
-                getQuestion();
-            }
-        }
-        
-        // End quiz by hiding questions,
-        // Stop timer and show final score
-        
-        function quizEnd() {
-            clearInterval(timerId);
-            let endScreenEl =
-                document.getElementById(
-                    "quiz-end"
-                );
-            endScreenEl.removeAttribute(
-                "class"
-            );
-            let finalScoreEl =
-                document.getElementById(
-                    "score-final"
-                );
-            finalScoreEl.textContent = time;
-            questionsEl.setAttribute(
-                "class",
-                "hide"
-            );
-        }
-        
-        // End quiz if timer reaches 0
-        
-        function clockTick() {
-            time--;
-            timerEl.textContent = time;
-            if (time <= 0) {
-                quizEnd();
-            }
-        }
-        
-        // Save score in local storage
-        // Along with users' name
-        
-        function saveHighscore() {
-            let name = nameEl.value.trim();
-            if (name !== "") {
-                let highscores =
-                    JSON.parse(
-                        window.localStorage.getItem(
-                            "highscores"
-                        )
-                    ) || [];
-                let newScore = {
-                    score: time,
-                    name: name,
-                };
-                highscores.push(newScore);
-                window.localStorage.setItem(
-                    "highscores",
-                    JSON.stringify(highscores)
-                );
-                alert(
-                    "Your Score has been Submitted"
-                );
-            }
-        }
-        
-        // Save users' score after pressing enter
-        
-        function checkForEnter(event) {
-            if (event.key === "Enter") {
-                saveHighscore();
-                alert(
-                    "Your Score has been Submitted"
-                );
-            }
-        }
-        nameEl.onkeyup = checkForEnter;
-        
-        // Save users' score after clicking submit
-        
-        submitBtn.onclick = saveHighscore;
-        
-        // Start quiz after clicking start quiz
-        
-        startBtn.onclick = quizStart;
-        </script>
+  <div id="quiz">
+  </div>
+  
 </body>
+<script>
+const data = {
+  answers: {
+    "Fact": ["Taylor Swift endorsed Donald Trump at Grammy Awards 2024","Virat has promoted HSBC Bank","Virat has been promoting a product of Sun Pharma who intended to expand their industry destructing Vedanthangal Bird Sanctuary"],
+    "Misinformation":["Virat promoted betting app with the promise of ease money","Taylor Swift was escorted to a National Football league stadium by the police. Video of police escorting her to the game gets 1M views","Singapore sought exclusivity deal over Taylor Swift concert in South East Asia"]
+  }
+};
+const quiz=document.querySelector("#quiz");
+const slides=document.querySelectorAll(".slide");
+const score={
+  correct:0,
+  incorrect:0,
+  total:0
+}
+function reset() {
+  document.querySelector("#start").classList.add("hidden");
+  document.querySelector("#end").classList.add("hidden");
+  document.querySelector("#questions").innerHTML=quizQuestionSetup();
+  document.querySelector("#questions").classList.remove("hidden");
+}
+function updateScore(correctorno){
+  if(correctorno) {
+    score.correct++
+  } else {
+    score.incorrect++
+  }
+  score.total++;
+}
+function check(opt,q) {
+ updateScore(feedback(opt,q));
+}
+function feedback(opt,q) {
+  const correctorno=data.answers[opt].find(a =>String(a).includes(q)) !==undefined
+  if(correctorno) {
+    document.querySelector("#feedback").innerHTML="<span>Congrats - you got that right!</span>"
+  } else { 
+    document.querySelector("#feedback").innerHTML="<span>Oh no - that was incorrect</span>"
+  }
+  document.querySelector("#feedback").classList.add("anim");
+  return correctorno;
+}
+function nextslide(){
+  num=Number(document.querySelector("#questions .slide:not(.hidden)").id.split("slide")[1]);
+  const slides = document.querySelectorAll("#questions .slide")
+  for(const slide of slides) {
+      slide.classList.add("hidden");
+  }
+  const newSlide=document.querySelector(`#slide${(num+1)}`)
+  if(newSlide){
+    newSlide.classList.remove("hidden");
+    newSlide.focus();
+  } else {
+    quizCompleted();
+  }
+}
 
+function quizCompleted() {
+  document.querySelector("#questions").classList.add("hidden")
+  document.querySelector("#end").classList.remove("hidden")
+  document.querySelector("#end .detail").innerHTML=`You answered ${score.correct} out of ${score.total} questions correctly`
+}
+function setupQuiz() {
+  quiz.innerHTML+=`<div id="start">
+    <div class="detail">Press the “play” button to begin sorting the statement in the circle into the column it belongs to</div>
+    <div class="circle"><span>Sorting activity</span></div>
+    <button id="startBtn" onclick="reset()">Start</button>
+  <div>`
+  quizQuestionSetup();
+  quiz.innerHTML+=`<div id="questions" class="hidden">
+  ${quizQuestionSetup()}</div>`
+
+  quiz.innerHTML+=` <div id="end" class="hidden">
+  <div class="circle"><span>Well done!</span></div>
+  <div class="detail"></div>
+    <button id="retryBtn" onclick="reset()">Retry</button>
+  <div>`
+  quiz.innerHTML+=`<div id="feedback" aria-live="polite"><div>`
+ document.querySelector("#feedback").addEventListener("animationend", function(e) {
+    animEnd(e)
+  }, false);
+  document.addEventListener("keydown", (e) => {
+    if(!document.querySelector("#quiz").classList.contains("hidden") && !document.querySelector("#questions").classList.contains("animCircLeft") && !document.querySelector("#questions").classList.contains("animCircRight")) {
+      switch(e.keyCode){
+        case 37:
+          document.querySelector(".slide:not(.hidden) .optBtn:nth-of-type(1)").click();
+          break;
+        case 39:
+          document.querySelector(".slide:not(.hidden) .optBtn:nth-of-type(2)").click();
+          break;
+        default:
+          return;
+          break;
+      }
+    }
+    
+  });
+}
+function animEnd(e){
+  if(e.animationName==="feedbackAnimIn"){
+    if(e.target.parentNode.classList.contains("anim")){
+    e.target.parentNode.classList.add("animout");
+    
+    }
+  }
+   if(e.animationName==="feedbackAnimOut"){ 
+      if(e.target.parentNode.classList.contains("animout")) {
+        e.target.parentNode.classList.remove("animout");
+        e.target.parentNode.classList.remove("anim");
+        nextslide();
+         document.querySelector("#questions").classList.remove("animCircRight");
+ document.querySelector("#questions").classList.remove("animCircLeft");
+      document.querySelector("#questions").classList.add("dropin");
+    }
+   }
+}
+
+function quizQuestionSetup(){
+  score.correct=0;
+  score.incorrect=0;
+  score.total=0;
+  const sortedQs=shuffle(allQs);
+  questionHtml="";
+  for(const q in sortedQs) {
+    questionHtml+=`<div id="slide${q}" tabindex="0" class="slide ${(Number(q)===0) ? '' : 'hidden'}">
+    <fieldset>
+      <legend class="lgnd"><span>${sortedQs[q][0]}</span></legend>
+      <button class="optBtn" onclick="check('${allAs[0]}','${sortedQs[q][0]}');document.querySelector('#questions').classList.add('animCircLeft');" data-opt="${allAs[0]}" data-q="${sortedQs[q][0]}">${allAs[0]}</button>
+      <button class="optBtn" onclick="check('${allAs[1]}','${sortedQs[q][0]}');document.querySelector('#questions').classList.add('animCircRight');" data-opt="${allAs[1]}" data-q="${sortedQs[q][0]}">${allAs[1]}</button>
+    </fieldset>
+  </div>`
+  }
+  return questionHtml;
+}
+
+function shuffle(arr) {
+  let ci = arr.length,  ri;
+  while (ci != 0) {
+    ri = Math.floor(Math.random() * ci);
+    ci--;
+    [arr[ci], arr[ri]] = [
+      arr[ri], arr[ci]];
+  }
+  return arr;
+}
+
+let movingCirc=false;
+let moveX=0;
+function handleStart(e) {
+  if(e.target.classList.contains("lgnd")) {
+    e.target.classList.add("moving");
+    movingCirc=true;  
+  }
+}
+function handleTouchEnd(e) {
+  if(movingCirc) {
+    handleEnd(moveX,e.target);
+  }
+}
+function handleMouseEnd(e) {
+  if(movingCirc) {
+  handleEnd(e.pageX,e.target);
+  }
+}
+function handleTouchCancel(e) {
+  if(movingCirc) {
+    handleEnd(moveX,e.target);
+  }
+}
+function handleEnd(x, el) {
+    if(el.classList.contains("lgnd")) {
+    el.classList.remove("moving");
+    }
+    movingCirc=false;
+  if(x<document.querySelector(".slide:not(.hidden)").offsetWidth/2) {
+    document.querySelector(".slide:not(.hidden) .optBtn:nth-of-type(1)").click()
+  } else {
+    document.querySelector(".slide:not(.hidden) .optBtn:nth-of-type(2)").click()
+  }
+}
+function handleMouseMove(e) {
+  if(movingCirc) {
+    handleMove(e.pageX);
+  }
+}
+function handleTouchMove(e) {
+  if(movingCirc) {
+    moveX=e.touches[0].pageX;
+    handleMove(moveX)
+  }
+}
+function handleMove(x) {
+  if(movingCirc) {
+    const elSlide=document.querySelector(".slide:not(.hidden)");
+  const el=elSlide.querySelector("legend");
+    if(x<10 || x>(elSlide.offsetWidth-10)){
+       handleEnd(x, el)
+       }
+    el.style.left=x+"px";
+  }
+
+}
+const allQs=[];
+const allAs=[];
+(function(){
+  for(const answer in data.answers){
+    allAs.push(answer);
+    for (const qs of data.answers[answer]){
+      allQs.push([qs, answer])
+    }
+  }
+  setupQuiz();
+  
+  quiz.addEventListener('mousedown', handleStart);
+  quiz.addEventListener('mouseup', handleMouseEnd);
+  quiz.addEventListener('mousemove', handleMouseMove);
+  quiz.addEventListener('touchstart', handleStart);
+  quiz.addEventListener('touchend', handleTouchEnd);
+  quiz.addEventListener('touchcancel', handleTouchCancel);
+  quiz.addEventListener('touchmove', handleTouchMove);
+})(); 
+</script>
 </html>
