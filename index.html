@@ -179,7 +179,7 @@ html body #quiz #start legend, html body #quiz #end legend, html body #quiz #que
 html body #quiz #start legend.moving, html body #quiz #end legend.moving, html body #quiz #questions legend.moving {
   cursor: grabbing;
 }
-html body #quiz #start #startBtn, html body #quiz #end #startBtn, html body #quiz #start #retryBtn, html body #quiz #end #retryBtn {
+html body #quiz #start #startBtn, html body #quiz #end #startBtn, html body #quiz #start #retryBtn, html body #quiz #end #retryBtn{
   background: black;
   border: 2px solid black;
   color: white;
@@ -310,8 +310,8 @@ $("document").ready( function () {
     }); 
 const data = {
   answers: {
-    "Fact": ["Taylor Swift endorsed Donald Trump at Grammy Awards 2024","Virat has promoted HSBC Bank","Virat has been promoting a product of Sun Pharma who intended to expand their industry destructing Vedanthangal Bird Sanctuary"],
-    "Misinformation":["Virat promoted betting app with the promise of ease money","Taylor Swift was escorted to a National Football league stadium by the police. Video of police escorting her to the game gets 1M views","Singapore sought exclusivity deal over Taylor Swift concert in South East Asia"]
+    "Fact": ["Birds evolved from Dinosaurs","Sugar does not cause diabetes","Pulling out a single grey hair will not amount to getting more grey hair", "Chillis have cooling effect despite having initial burning sensation","Elon Musk’s X disabled feature for reporting electoral misinformation","Superstar called “Jailer” an average to above average film"],
+    "Misinformation":["Taylor Swift endorsed Donald Trump at Grammy Awards 2024","Virat promoted betting app with the promise of ease money","Great Wall of China is the only man made thing visible from space","Rolling down your window is better for fuel economy", "Microwaving food is unhealthy and would lead to cancer in the long run", "Chennai Super Kings & Rajasthan Royals were banned for match fixing"]
   }
 };
 const quiz=document.querySelector("#quiz");
@@ -382,6 +382,7 @@ function setupQuiz() {
   <div class="circle"><span>Well done!</span></div>
   <div class="detail"></div>
     <button id="retryBtn" onclick="reset()">Retry</button>
+    <a href="misinformation-info.html"><button id="retryBtn">Click here for sMinsinformation Burst</button></a>
   <div>`
   quiz.innerHTML+=`<div id="feedback" aria-live="polite"><div>`
  document.querySelector("#feedback").addEventListener("animationend", function(e) {
