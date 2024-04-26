@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src=https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js></script> 
+    <script src=https://code.jquery.com/jquery-1.9.1.js></script> 
+    <script src=https://code.jquery.com/ui/1.11.0/jquery-ui.js></script> 
+    
+	<title>Misinformation Burst</title>
+</head>
+<style>
+@keyframes dropin {
+  from {
+    top: -100%;
+  }
+}
+@keyframes noclick {
+  from {
+    top: -100%;
+    left: -100%;
+  }
+  to {
+    top: 0;
+    left: 0;
+  }
+}
+@keyframes feedbackAnimIn {
+  0% {
+    top: -50%;
+  }
+  20% {
+    top: 50%;
+  }
+  100% {
+    top: 50%;
+  }
+}
+@keyframes feedbackAnimOut {
+  0% {
+    top: 50%;
+  }
+  80% {
+    top: 50%;
+  }
+  100% {
+    top: 100%;
+  }
+}
+.hidden {
+  display: none;
+}
+html {
+  font-family: Garamond, serif;
+  font-size: 1.2em;
+  margin: 0;
+  padding: 0;
+}
+html * {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  font-family: Garamond, serif;
+}
+html body {
+  margin: 0;
+  padding: 0;
+}
+html body #quiz {
+  background: #edff74;
+  background: linear-gradient(90deg, #f1d18a 50%, #588d9c 50%);
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 200px;
+  min-height: 400px;
+}
+html body #quiz #feedback {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: -100%;
+  left: -100%;
+}
+html body #quiz #feedback > span {
+  background: black;
+  color: white;
+  font-weight: bold;
+  filter: drop-shadow(4px 4px 0 rgba(0, 0, 0, 0.2));
+  position: absolute;
+  padding: 1em;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transform-origin: center;
+}
+html body #quiz #feedback.anim {
+  animation-duration: 0s;
+  animation-fill-mode: forwards;
+  animation-name: noclick;
+}
+html body #quiz #feedback.anim > span {
+  animation-duration: 1s;
+  animation-name: feedbackAnimIn;
+  animation-fill-mode: forwards;
+}
+html body #quiz #feedback.animout > span {
+  animation-duration: 1s;
+  animation-name: feedbackAnimOut;
+}
+html body #quiz #start, html body #quiz #end, html body #quiz #questions {
+  padding: 3vw;
+}
+html body #quiz #start .detail, html body #quiz #end .detail, html body #quiz #questions .detail {
+  background: white;
+  padding: 0.2em;
+  text-align: center;
+}
+html body #quiz #start .circle, html body #quiz #end .circle, html body #quiz #questions .circle, html body #quiz #start fieldset legend, html body #quiz #end fieldset legend, html body #quiz #questions fieldset legend {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.0em;
+  font-weight: bold;
+  text-align: center;
+  background: white;
+  width: 25vw;
+  height: 25vw;
+  min-width: 100px;
+  min-height: 100px;
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1em;
+}
+html body #quiz #start .circle span, html body #quiz #end .circle span, html body #quiz #questions .circle span, html body #quiz #start fieldset legend span, html body #quiz #end fieldset legend span, html body #quiz #questions fieldset legend span {
+  pointer-events: none;
+  left: 0;
+  top: 0;
+  background: white;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  border-radius: 50%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1em;
+}
+html body #quiz #start .circle:after, html body #quiz #end .circle:after, html body #quiz #questions .circle:after, html body #quiz #start fieldset legend:after, html body #quiz #end fieldset legend:after, html body #quiz #questions fieldset legend:after {
+  content: " ";
+  -webkit-backdrop-filter: brightness(90%) saturate(200%);
+  backdrop-filter: brightness(90%) saturate(200%);
+  width: 150%;
+  height: 150%;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+html body #quiz #start legend, html body #quiz #end legend, html body #quiz #questions legend {
+  z-index: 4;
+  cursor: move;
+  cursor: grab;
+}
+html body #quiz #start legend.moving, html body #quiz #end legend.moving, html body #quiz #questions legend.moving {
+  cursor: grabbing;
+}
+html body #quiz #start #startBtn, html body #quiz #end #startBtn, html body #quiz #start #retryBtn, html body #quiz #end #retryBtn{
+  background: black;
+  border: 2px solid black;
+  color: white;
+  border-radius: 0.2em;
+  padding: 0.5em 1em;
+  font-family: Garamond, serif;
+  font-size: 1.2em;
+  transition: all 0.3s;
+  font-weight: bold;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 3vw;
+}
+html body #quiz #start #startBtn:focus, html body #quiz #end #startBtn:focus, html body #quiz #start #retryBtn:focus, html body #quiz #end #retryBtn:focus, html body #quiz #start #startBtn:hover, html body #quiz #end #startBtn:hover, html body #quiz #start #retryBtn:hover, html body #quiz #end #retryBtn:hover {
+  cursor: pointer;
+  color: black;
+  background: white;
+}
+html body #quiz #questions.dropin fieldset legend {
+  animation-duration: 0.25s;
+  animation-name: dropin;
+  animation-fill-mode: forwards;
+}
+html body #quiz #questions.animCircRight fieldset legend {
+  left: 150% !important;
+  transform: translate(-50%, -50%) rotate(150deg);
+  transition: transform 0.9s, left 0.9s;
+}
+html body #quiz #questions.animCircLeft fieldset legend {
+  left: -50% !important;
+  transform: translate(-50%, -50%) rotate(-150deg);
+  transition: transform 1s, left 1s;
+}
+html body #quiz #questions .slide {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  top: 0;
+  left: 0;
+  position: absolute;
+}
+html body #quiz #questions .slide fieldset {
+  border: none;
+}
+html body #quiz #questions .slide fieldset button {
+  color: black;
+  font-size: 1.5em;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 3vw;
+  font-weight: bold;
+  background: transparent;
+  border: none;
+}
+html body #quiz #questions .slide fieldset button:hover, html body #quiz #questions .slide fieldset button:focus {
+  text-decoration: underline;
+  cursor: pointer;
+}
+html body #quiz #questions .slide fieldset button:nth-of-type(1) {
+  position: absolute;
+  left: 0;
+}
+html body #quiz #questions .slide fieldset button:nth-of-type(2) {
+  position: absolute;
+  right: 0;
+}
+@media (max-width: 500px) {
+  html body #quiz #start, html body #quiz #end, html body #quiz #questions {
+    padding: 3vw;
+  }
+  html body #quiz #start .detail, html body #quiz #end .detail, html body #quiz #questions .detail {
+    background: white;
+    padding: 0.2em;
+    text-align: center;
+  }
+  html body #quiz #start .circle, html body #quiz #end .circle, html body #quiz #questions .circle, html body #quiz #start fieldset legend, html body #quiz #end fieldset legend, html body #quiz #questions fieldset legend {
+    top: 0.5em;
+    transform: translate(-50%, 0);
+  }
+  html body #quiz #start.animCircRight fieldset legend, html body #quiz #end.animCircRight fieldset legend, html body #quiz #questions.animCircRight fieldset legend {
+    transform: translate(-50%, 0%) rotate(150deg);
+  }
+  html body #quiz #start.animCircLeft fieldset legend, html body #quiz #end.animCircLeft fieldset legend, html body #quiz #questions.animCircLeft fieldset legend {
+    transform: translate(-50%, 0%) rotate(-150deg);
+  }
+  html body #quiz #start .detail, html body #quiz #end .detail {
+    position: absolute;
+    bottom: 5em;
+    width: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  html body #quiz #questions.anim {
+    animation-duration: 0s;
+    animation-fill-mode: forwards;
+    animation-name: noclick;
+  }
+  html body #quiz #questions .slide {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    top: 0;
+    left: 0;
+    position: absolute;
+  }
+  html body #quiz #questions .slide fieldset {
+    border: none;
+  }
+  html body #quiz #questions .slide fieldset button {
+    font-size: 1em;
+    width: 50%;
+    text-align: center;
+  }
+}
+.content-box {
+    background-color: #fafafb;
+    box-shadow: 1px 4px 8px rgba(0,0,0,.15);
+    transition: all .3s ease-in-out;
+    padding: 10px;
+    padding-bottom: 0;
+    margin-top: 40px;
+    margin-bottom: 10px;
+    height: 200px;
+    width:800px;
+}
+
+</style>
+
+<body style="background-color:  #f1d18a;">
+  <a href="index.html"><button width="20px" height="1.0em" style="background-color: black; color: white; font-family: 'Times New Roman', Times, serif;" >Go back to Game</button></a>
+    <h2 align="center">Misinformation Burst</h2>
+      <div class="container" align="center">
+        <div class="row">	
+          <div class="col-md-4 text-center" style="opacity: 1;">
+          <div class="content-box">
+          <h4 class="content-box-title">Taylor Swift endorsed Donald Trump at Grammy Awards 2024 </h4>
+          <p class="content-box-sub">Taylor Swift was targeted by deepfakes, with supporters of Donald Trump posting manipulated media falsely showing her supporting Trump and engaging in election denialism.</p>
+          </div>
+          </div>
+          <div class="col-md-4" style="opacity: 1;">
+            <div class="content-box text-center">
+            <h4 class="content-box-title">Virat promoted betting app with the promise of ease money</h4>
+            <p class="content-box-sub">Technology was used to alter an interview clip of Kohli, replacing his real voice with a fabricated one. This made it seem as though he was promoting an online game with dubious benefits.</p>
+            </div>
+          </div>
+          <div class="col-md-4" style="opacity: 1;">
+            <div class="content-box text-center">
+            <h4 class="content-box-title"> Great Wall of China is the only man made thing visible from space </h4>
+            <p class="content-box-sub">The Great Wall of China is 13,171 miles long. However, it is not possible to see from space with just the unaided eye. The Great Wall of China is nearly the same colour as the area surrounding it , so it’s difficult to distinguish the wall from its surroundings.</p>
+            </div>
+          </div>
+          <div class="col-md-4" style="opacity: 1;">
+            <div class="content-box text-center">
+            <h4 class="content-box-title">Rolling down your window is better for fuel economy</h4>
+            <p class="content-box-sub">Rolling down your window increases the wind resistance. As a result , the car will use more fuel as it is less aerodynamic with the window open.</p>
+            </div>
+          </div>
+          <div class="col-md-4" style="opacity: 1;">
+            <div class="content-box text-center">
+            <h4 class="content-box-title">Microwaving food is unhealthy and would lead to cancer in the long run</h4>
+            <p class="content-box-sub">Microwave is made of electro magnetic radiation which is similar to the radiation of the sun. Only when the power of the electro magnetic radiation is excessive , only then it amounts to cancer however the electromagnetic radiation is lesser in microwave equal to that of your mobile phone. The microwave heats the water present inside the food particles.</p>
+            </div>
+          </div>
+          <div class="col-md-4" style="opacity: 1;">
+            <div class="content-box text-center">
+            <h4 class="content-box-title">Chennai Super Kings & Rajasthan Royals were banned for match fixing</h4>
+            <p class="content-box-sub">CSK & RR were suspended from the IPL for two years for betting & sport fixing of their key officials Gurunath Meiyappan & Raj Kundra during 2013 season. 
+              atch fixing & Spot fixing aren’t the same. Spot fixing is when you defraud bookmakers by a player taking a pre-arranged action to fix the result of the specific moment/ event. Match fixing involves pre-determining the outcome of an entire event.</p>
+            </div>
+          </div>
+        </div>
+        </div>
+  
+</body>
+</html>
